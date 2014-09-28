@@ -1,0 +1,476 @@
+
+Tasks:
+-----
+
+ Copy current buffer to new file:  C-x h, C-x f, C-y
+ To abort current command: C-g
+
+Editing:  
+-------
+         
+Modifying Text:
+---------------
+ESC u    - Change next word to upper case
+ESC l    - Change next word to lower case
+ESC c    - Capitalize next word
+ESC - ESC l - Capitalize previous word
+ESC - ESC u - Change previous word to upper case
+ESC - ESC l - Change previous word to lower case
+C-x C-u  - Change highlighted text (region) to upper case
+C-x C-l  - Change highlighted test (region) to lower case
+C-x C-t  - transpose-lines: Flip the position of current line and the one above. 
+C-t      - transpose-chars: Flip the position of current character and the one before.
+ESC t    - transpose-words: Flip the position of current word and the one before.
+C-x u    - Undo
+ESC x revert-buffer - Revert to before last save
+Esc c recover-file  - Recover buffer from auto-save file.
+
+
+Searching:
+--------- 
+C-s         -  Search forward.
+C-r         -  Search backward.
+C-s CR      -  Non incremental search.
+ESC C-S     -  RegExp search (Esc CNTRL+SHIFT+S).
+C-s ESC y   -  Start a search using text in kill ring
+C-s C-w     -  Start a search using the word the cursor is on.
+ESC p       -  Bring back previous search command.
+ESC n       -  Bring back next search command.
+
+  
+Searching Replace:
+-----------------
+
+ESC %       -  Search and replace (ESC SHIFT-%).
+ESC C-%     -  RegExp search and replace (ESC CNTRL+SHIFT+%).
+Space       -  Replace
+n           -  skip occurence without replacing.
+!           -  Replace all no questions.
+,           -  Replace and wait for space to be pressed before contining.
+C-r         -  Enter recursive edit.
+               While in a search/replace C-r enters recursive-edit mode
+               where you can type other editing commands and then ESC C-c
+               to return to the search/replace your doing. 
+ESC C-c     -  Exit recursive edit. 
+C-x ESC ESC -  Bring back last command.  ESC p to scroll backwards through commands.
+ESC p       -  Bring back previous search or replace string.
+ESC n       -  Bring back next search or replace string.
+
+RegExp Search:
+-------------
+  The carriage return at the end of the line is entered as C-q C-j. 
+  C-q "quotes" the next character entered.
+
+  Example: To switch from brace style in code where the { is on 
+           a line by itself to the *correct* way where the {  appears
+           at the end of the line use:
+
+           ^\(.*\)^q^j[ \t]*{[ \t]*^q^j RETURN \1 {^q^j
+           Note: ^q^J means CNTRL-Q CNTRL-J. 
+
+Occurs Search:
+--------------
+Esc x occur  - Filter buffer tonly diplay lines that match searc.
+C 1-9        - Before entering occur command hit CNTRL and a number key to specify the 
+               number of line of context around each line that matches. Default is 1.
+             - Note: While in occurs buffer press return on a matched line to 
+               scroll upper listing to that line.
+
+
+RegExp Syntax in Emacs:
+---------------------
+ Matching text:
+
+ ^    Match beggining of line
+ $    Match end of line
+ .    Match any character execpt \n
+ \b   Either end of word
+ \B   Not at either end of word. 
+ \<   Start of word
+ \>   End of word
+ \w   Word character A-z, 0-9
+ [ ]  Match any char between brackets.
+ [^ ] Match any char not between brackets.
+ `    Match at begining of buffer
+ '    Match at end of buffer
+ 
+
+
+ How many times:
+ --------------
+
+ ?   None or 1 times
+ +   At lease once
+ *   o to many times
+ *?  Same as * but non greedy (match as little as possible)
+ *+  Same as + but non greedy
+ ??  Same as ? but non greedy
+
+ Alterantion:
+ -----------
+ To do an Or search for "this" OR "that" use \| as the OR
+
+ this\|that
+
+ Examples:
+
+   Non greedy maching:
+   ------------------
+   Assume you wish to remove the html tags in this text:
+   <b>some text</b>
+   The regexp <.*> would greedily match the entire line, from the opening < to the second 
+   > at the end of the line.
+   To avoid this and just match "<b>" and "</b>" use:  <.*?>
+
+
+Cut, Pasting, Marking:
+-------------------------
+C-y          - yank: Paste 
+ESC y        - yank-pop: Pops prior copied or killed text from kill ring.
+             If you copy/kill multiple times you can paste previous copies with ESC y. 
+C-SPC        - set-mark-command
+ESC w        - Copy marked region
+C-x C-x      - exchange-point-and-mark: places cursor at start of marked region. 
+               On non graphical terminals where marked region is not highlighted 
+               use this to double check what marked region is before a delete.  
+C-x h        - Mark whole buffer. 
+
+C-x rk       - kill rectangle
+               If a rectangle spans many pages it can take too long to scroll down using the down arrow key.
+               Instead, first toggle transient-mark-mode on: M-x transient-mark-mode 
+               Set the mark (Cntrl-Space) at the upper left of rectangle, use the page down key to get
+               to bottom of rectangle (dont use Esc X->), move the cusor the lower right of rectangle
+               and C-x rk to kill it.
+               Then toggle transient-mark-mode off by entering it again: M-x transient-mark-mode 
+
+C-x ry       - paste rectangle
+C-x rt       - Replace rectange with string (prompts for string).
+ESC -1 [End] - Mark words. [End] is set to M-@ (mark-word). To mark next word [End]. To mark next 2
+               words ESC 2 [End]
+               To mark previous word ESC -1 [End]
+
+Killing
+-------
+C-k        - kill line
+C-Delete   - kill word
+C-\        - backward kill word
+C-x rk     - kill rectange
+C-w        - Kill marked region
+ESC-SPC    - Kill all white space but one around point
+ESC-\      - Kill all white space around point 
+
+Indenting:
+--------
+C-x rk     - To decrease indent use rectangle delete.  Set mark at top left of box of spaces to delete, 
+             move cursor to bottom right of box, and C-x rk to kill the rectangle.
+C-x ro     - To increase indent use open-rectangle. Set mark at first line and first char of box to indent.
+             Move cursor to last line ob box and over to the right the number of spaces you wish to indent- 
+             then c-x ro. You may have to put this (set-default 'indent-tabs-mode nil)  in .emacs to tell 
+             emacs to insert space and not tabs.
+C-x rv     - delete-whitespace-rectangle.  This command will delete all white space in the specified
+             rectangle.
+             Use it to change varying number of space to one.
+             For example to change:  
+             This: 
+
+               " select                 \n" + 
+               "  customer_id,                 \n" +
+               "  customer_fname,           \n" +
+               " from customers          \n" +        
+             To this:
+               " select            \n" + 
+               "  customer_id,     \n" +
+               "  customer_fname,  \n" +
+               " from customers    \n" +        
+             Set the mark on the first line at the column where you want to delete from, then move to the
+             last
+             embedded space on the last line and issue the delete-whitespace-rectangle command.
+             To make it convient to use delete-whitespace-character bind it to C-x rv.
+             Put this in .emacs
+               ;; Bind delete-whitespace-rectangle to C-x rv
+               (global-set-key "\C-xrv" 'delete-whitespace-rectangle)
+
+
+Aligning Columns
+----------------
+align-cols   Set point and mark and this command will align all columns at the mark
+
+   Changes this:
+
+     aaa    bbbb  cccccccc
+        1111     2222       33333
+     xxxxx  yy zzzzzz            
+
+   To this:
+     aaa      bbbb       cccccccc          
+     1111     2222       33333
+     xxxxx    yy         zzzzzz       
+
+
+Moving around:
+------------
+C-l        - Recenter on current line
+ESC >      - End of buffer
+ESC <      - Beginning of buffer
+ESC f      - forward word
+ESC b      - back word
+ESC e      - Forward sentence.   Sentences are expected to end with period and *two* spaces.
+ESC a      - Backward sentence.
+ESC k      - Kill sentence.
+ESC }      - Forward Paragraph.  Paragraphs are expected to end with CR and a blank line. 
+ESC {      - Backward Paragraph.
+goto-line  - Go to line number given.
+ESC C-f    - Go to next matching brace. Put point on { and use this command to find the matching }.
+ESC C-b    - Go back to prior matching brace. Put point just to the right of } and use this command to
+             find the matching {.
+
+
+Directory Edit:
+--------------
+
+C-x f     -  Open File or directory in Directory Edit.o
+s         -  Sort file listing by date, press s again to toggle back to sort alphabetically.
+d         -  Mark a file for deletion when the x key is pressed.
+#         -  Mark all #auto-save# files for deletion.
+~         -  Mark all backup~ files for deletion.
+D         -  Delete a file.
+C         -  Copy a file.
+R         -  Move a file.
+A         -  Reg Exp Search on all marked files.  Use ESC , to move to next match.
+Q         -  Reg Exp Search and Replace on all marked files.
+Z         -  Gzip's file. Press Z again to uncompress.
+m         -  Mark files for later D, C, R, Z as a group. 
+u         -  Un-mark a file.
+%m        -  Mark files that match a regular _expression. Ex: %m \.gif D  deletes all gif files.
+=         -  Do a Unix diff between file marked with C-SPACE and file under cursor.
+!         -  Run a unix command on file.
+ESC DEL   -  Remove all marks from files.
++         -  Create a directory.
+
+ Note: Add (setq dired-listing-switches "-alB") .emacs to not show auto-saved "~"
+ backup files in the directory edit
+
+
+
+
+Bookmarks:
+---------
+C-x r m    -  Set a named bookmark.
+C-x r b    -  Jump to a bookmark. The last bookmark is the default. Press return to select
+              the default.  Or type the bookmark name. Press tab to display a list of
+              bookmarks. Type a few lettes of bookmark name and then press tab for 
+              auto complete.
+C-x bookmark-rename  Rename an existing bookmark.
+C-x bookmark-delete  Delete an existing bookmark.
+C-x r l    -  List bookmarks.
+           Bookmark list commands:
+d          - Mark a bookmark for deleteion.
+r          - Mark a bookmark for renaming.
+x          - Execute command on marked bookmarks.
+m          - Mark a bookamrk for display
+v          - Split window as needed and display each bookmark marked for display.
+bookmark-insert -  Insert text from bookmarked file at cursor
+bookmark-write  -  Save current bookmarks to file.
+bookmark-load   -  Load bookmarks from a file.
+
+
+Buffers:
+-------
+
+C-x C-f    - File open. This auto fills the file name with current directory. 
+             To ignore current direcotry path just add  ~/ or // to it. 
+ESC p      -  Bring back previous file open command.
+ESC n      -  Bring back next file open command.
+C-c C-s    - Save
+C-x C-w    - Save as
+C-x C-i    - Insert file at cursor 
+
+
+Buffer List Window:
+------------------
+
+C-x C-b    - Open buffer list window.
+d          - Mark for removal from buffer list.
+s          - Mark for save.
+x          - Execute commands on all files marked.
+m          - Mark buffer for display.
+v          - Split window as needed and display each buffer marked for display.
+C-x 1      - Expand current window to fill screen.
+C-x 0      - Close current window.
+C-x b      - Switch to buffer.  Enter name of buffer or press return for buffer list.
+C-x 2      - Split into two windows vertically
+C-x 3      - Split into two windows horizontally
+             After splitting window vertically use C-x < to scroll the text file left in your view
+             window, or C-x > to scroll it to the right.  This is reverese of what may be intuitive.
+
+Registers
+---------
+C-x x      - Copy highlighted text to a register. Will ask for a register name (single characater)
+C-x g      - Paste register contents. Will ask for the register.
+C-x r      - Copy highlighted rectangle to a register. Will ask for a register name (single characater)
+           -  view-all-registers - View all registers and their content
+
+Misc:
+----
+C-x C-q    - Toggle buffer read only
+ESC x      - compare-windows.  If there are two windows on the screen- comapare the current
+             windows contents to the other windows contents and scrool to the first different 
+             line          
+C-g        - To abort current command.
+C-z        - In gui env minimize emacs. In terminal suspends emacs- press fg to resume.
+ESC-x sort-lines  - Sort the marked lines
+Esc x calendar
+Esc x calculator
+      To switch numbering systems in calculator:
+        Press X to switch to hexadecimal
+        Press O to switch to octal 
+        Press B to switch to binary
+        Press D to return to decimal
+C-h l List the last 100 keystrokes:
+
+
+
+Hex data:
+-------
+
+ Esc x hexlify-buffer   To display the curent buffer as hex data (read only).
+ Esc x hexl-mode        To edit the current buffer in hex mode 
+
+
+Shell-Mode:
+---------
+C-x        - Open a shell.
+ESC p      - Previous command.
+tab        - Command auto complete.                        
+ESC !      - Run a single shell command from mini-buffero
+
+
+Ange-Ftp:
+
+C-x C-f   - Same command as file open command followed by "/user@host:directory1". 
+            or just "/user@host:"  to go to the home directory.
+            Note: When Ange-Ftp is running there will be a buffer labeled "*ftp "
+            in the buffer list.  Move to this buffer to issue ftp commands 
+            directly.
+
+
+
+Telnet:
+------
+
+ESC-x telnet -  Open a telnet session.
+
+
+
+Emacs and CVS:
+-------------
+
+ When editing a file in a directory that is part of CVS project use C-x v v
+ to perform the  next logical action on that file.
+ If the file was added to cvs, and edited since the last commit, then
+ C-x v v will  perform a commit on the file.  If the file was newly added to the directory-
+ then C-x v v will "cvs add" the file 
+ ( do another C-x v v to commit the file).
+          
+ C-x v v     vc-next-action: Perform the next logical command (commit, add).
+ C-x v =     vc-diff: Show differences between last checked in version and this buffer with
+             the working copy.
+ C-u C-x v = vc-version-diff: Prompts for version numbers and then shows differences between them.
+ C-x v u     vc-revert-buffer: Reverts this buffer to the last checked in version.
+             All editing since last checkin is discarded.
+ C-x v ~     vc-version-other-window : Open a new window with a prior version.
+             Prompts for the version number.    
+ C-x v l     vc-print-log: Display the cvs log for this file.
+ C-x v i     vc-register: Add the file in the buffer to cvs. Same as C-x v v.
+ C-x v r     Checkout a prior version by version number, or tag name.
+             It will overlay the working copy.
+ C-x v s     Apply a tag to this file.
+ C-x v a     Update the ChangeLog file. A file called "ChangeLog" will be created in working directory.
+ C-x v d     Show a listing of all files in current directory that are in cvs.
+             By default only those files locked, or out of sync with the repository
+             are shown.  "v t" will show all files. "v t" again will hide them again.
+             Once in this dir-ed, you can mark mutiple files and perform a 
+             C-x v v (next action) or C-x v u on all of them at once.
+
+Help:
+----
+
+C-h k      - Describe key.
+             Type C-h k and then the key or command sequence your curious about.
+             Example: C-h k C-x C-s 
+
+C-h m      - Describe the current major mode
+
+C-h w      - Where is command.  Give a command name and get the key sequence for it.
+             Example C-h w save-buffer
+
+C-h f      - Describe a function.  Give a function name and get documentation for it.
+             Example C-h f save-buffer
+
+C-h v      - Describe a variable
+             Example:  C-h V tab-stop
+
+C-h F      - Display Emacs Faq
+	
+C-h b      - Display a list of key bindings.
+
+C-h ?      - Display help options     
+    
+M-x global-set-key RET C-next  mark-word RET  -- Set a key to a command, This example set CNTRL Page down to highlight word.
+
+
+                              Functions:
+                              ----------
+
+
+;;
+;; A example reg-exp replace function
+;;
+
+(defun change-abc-xyz ()
+  "Function description here."
+  (interactive)
+  (goto-char (point-min))
+  (replace-regexp "abc" "xyz")
+)
+
+;;
+;; This function will change the coding style 
+;; of Java code, taking the open curly brace that 
+;; is by itself on a new line, and pulling it back
+;; up to be at the end of the line that declares the 
+;; block
+;;
+
+;;
+;; Note: Any "\" should be prefixed with an escape \
+;; So:  \(  becomes \\(
+;;      \)  becomes \\)
+;;      \w  becomes \\w 
+;;      \1  becomes \\1
+;; The newline is entered as C-Q C-J. Same as in
+;; emacs buffer
+;;
+(defun fix-curly-braces ()
+  "Put curly braces at end."
+  (interactive)
+  (goto-char (point-min))
+  (replace-regexp "^\\(.*\\)[ 	]*
+[ 	]*{[ 	]*
+" "\\1 {
+")
+)
+
+Find duplicate lines:
+---------------------
+
+^\(.*\)^J\(^.*^J\)*\1
+
+(defun find-first-duplicate-line ()
+  "Find a line that is repeated any where else in file."
+  (interactive)
+  (goto-char (point-min))
+  (search-forward-regexp "^\\(.*\\)
+\\(^.*
+\\)*\\1")
+)
